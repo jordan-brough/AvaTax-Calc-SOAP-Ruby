@@ -18,7 +18,6 @@ svc = AvaTax::TaxService.new(
     }
   #Call the service
 result = svc.gettaxhistory(request)
-print result
 #Display the result
 print "GetTaxHistory ResultCode: "+result[:ResultCode][0]+"\n"
 #If we encountered an error
