@@ -4,5 +4,6 @@ Ruby sample of the AvaTax Calc SOAP API demonstrating: ValidateAddress, Ping, Ge
 
 - Make sure to install the required gems specified in the gemfile:
 --- Using a command prompt, navigate to the root directory of the sample.
+--- Run "gem install bundler" to ensure that dependencies can be automatically installed.
 --- Run "bundle install" to automatically install the required dependencies.
-- Enter your AvaTax account number and license key in the sample you would like to run. To run this sample, you will need a valid AvaTax account.
+- Enter your AvaTax account number and license key in the credentials.yml file. To run this sample, you will need a valid AvaTax account.

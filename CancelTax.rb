@@ -1,26 +1,27 @@
-require_relative 'Avatax_TaxService/lib/avatax_taxservice.rb'
+require 'Avatax_TaxService'
+require 'yaml'
 
 #Create an instance of the service class
-svc = AvaTax::TaxService.new(
-  :username => "account.admin.1100014690",  #TODO: Enter your username or account number here
-  :password => "avalara",  #TODO: Enter your password or license key here
-  :clientname => "AvaTaxCalcSOAP Ruby Sample"
-  )
+credentials = YAML::load(File.open('credentials.yml'))
+svc = AvaTax::TaxService.new(:username => credentials['username'], 
+      :password => credentials['password'],  
+      :clientname => credentials['clientname'],
+      :use_production_url => credentials['production']) 
   
   #Create the request
   request = {
     :doccode=>"MyDocCode",   #Required
-    :companycode=>"SDK",      #Required
+    :companycode=>credentials['companycode'],      #Required
     :doctype=>"SalesInvoice", #Required
     :cancelcode=>"DocVoided" #Required
     }
   #Call the service
 result = svc.canceltax(request)
 #Display the result
-print "CancelTax ResultCode: "+result[:ResultCode][0]+"\n"
+print "CancelTax ResultCode: "+result[:result_code]+"\n"
 
 #If we encountered an error
-if result[:ResultCode][0] != "Success"
+if result[:result_code] != "Success"
   #Print the first error message returned
-  print result[:Summary][0]+"\n"
+  print result[:details]+"\n"
 end

@@ -1,7 +1,5 @@
 require_relative 'Avatax_TaxService/lib/avatax_taxservice.rb'
-require_relative 'Avatax_AddressService/lib/avatax_addressservice.rb'
 require 'yaml'
-#Note that the ping function exists in both the AddressSvc and TaxSvc classes - it works the same way in both.
 
 #Create an instance of the service class
 credentials = YAML::load(File.open('credentials.yml'))
@@ -9,16 +7,28 @@ svc = AvaTax::TaxService.new(:username => credentials['username'],
       :password => credentials['password'],  
       :clientname => credentials['clientname'],
       :use_production_url => credentials['production']) 
-
+  
+  #Create the request
+  request = {
+    :docid=>"",   #optional
+    :companycode=> credentials['companycode'],      #Required
+    :doctype=>"SalesInvoice", #Required
+    :doccode => "MyDocCode",
+    :docdate => DateTime.now.strftime("%Y-%m-%d"),
+    :totalamount => "1100.5500",
+    :totaltax => "7",
+    :hashcode => "0",
+    :commit => "false",
+    :newdoccode => "MyDocCode"    
+    }
   #Call the service
-result = svc.ping
-#print result
+result = svc.posttax(request)
 
 #Display the result
-print "Ping ResultCode: "+result[:result_code]+"\n"
+print "PostTax ResultCode: "+result[:result_code]+"\n"
 
 #If we encountered an error
 if result[:result_code] != "Success"
   #Print the first error message returned
-  print result[:details]+"\n"
+  print result[:messages][:message][0][:summary]+"\n"
 end

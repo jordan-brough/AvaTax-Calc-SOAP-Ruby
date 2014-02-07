@@ -1,16 +1,17 @@
-require 'Avatax_TaxService'
+require_relative 'Avatax_TaxService/lib/avatax_taxservice.rb'
+require 'yaml'
 
 #Create an instance of the service class
-svc = AvaTax::TaxService.new(
-  :username => "",  #TODO: Enter your username or account number here
-  :password => "",  #TODO: Enter your password or license key here
-  :clientname => "AvaTaxCalcSOAP Ruby Sample"
-  )
+credentials = YAML::load(File.open('credentials.yml'))
+svc = AvaTax::TaxService.new(:username => credentials['username'], 
+      :password => credentials['password'],  
+      :clientname => credentials['clientname'],
+      :use_production_url => credentials['production']) 
   
   #Create the request
   request = {
     :doccode=>"MyDocCode",    #Required
-    :companycode=>"SDK",      #Required
+    :companycode=> credentials['companycode'],      #Required
     :doctype=>"SalesInvoice", #Required
     :docid=> "",              #Optional
     :detaillevel=>"Tax",      #Optional
@@ -18,25 +19,24 @@ svc = AvaTax::TaxService.new(
     }
   #Call the service
 result = svc.gettaxhistory(request)
+#print result
 #Display the result
-print "GetTaxHistory ResultCode: "+result[:ResultCode][0]+"\n"
+print "GetTaxHistory ResultCode: "+result[:result_code]+"\n"
 #If we encountered an error
-if result[:ResultCode][0] != "Success"
-  print result[:Summary][0] +"\n"
+if result[:result_code] != "Success"
+  print result[:details] +"\n"
 else
-  print "DocCode: " + result[:GetTaxResultDocCode][0]+ " Total Tax Calculated: " + result[:GetTaxResultTotalTax][0].to_s + "\n"
+  print "DocCode: " + result[:get_tax_result][:doc_code]+ " Total Tax Calculated: " + result[:get_tax_result][:total_tax].to_s + "\n"
   print "Jurisdiction Breakdown:\n"
   #Show the tax amount calculated at each jurisdictional level
-  #The result object collapses each element of the tax details into a single array, so some additional work is required to detangle them.
-  (0...result[:GetTaxResultNo].length).each do |lineIndex|
+  result[:get_tax_result][:tax_lines][:tax_line].each do |line|
     print "   "
-    print "Line Number " + result[:GetTaxResultNo][lineIndex] + ":"
+    print "Line Number " + line[:no] + ": Tax: " + line[:tax]
     print "\n"
     #This will display the jurisdiction name and tax at each jurisdiction for the line.
-    numDetails = result[:GetTaxResultTaxDetailJurisName].length / result[:GetTaxResultNo].length
-    ((lineIndex * numDetails)...((lineIndex + 1) * numDetails)).each do |detailIndex| 
+    line[:tax_details][:tax_detail].each do |detail| 
       print "       "
-      print result[:GetTaxResultTaxDetailJurisName][detailIndex]+ ": " +result[:GetTaxResultTaxDetailTax][detailIndex]
+      print detail[:juris_name]+ ": " +detail[:tax]
       print "\n"
     end
   end
