@@ -1,4 +1,4 @@
-require_relative 'Avatax_AddressService/lib/avatax_addressservice.rb'
+require 'Avatax_AddressService'
 require 'yaml'
 
 #Create an instance of the service class
@@ -25,13 +25,13 @@ result = svc.validate(input)
 
 #If we encountered an error
 if result[:result_code] != "Success"
-  #Print the first error message returned
-  print "Address Validation ResultCode: "+result[:result_code]+"\n"
-  print result[:details]+"\n"
+  #puts the first error message returned
+  puts "Address Validation ResultCode: "+result[:result_code]
+  puts result[:details]
 else
-  print "Validated Address: \n"
+  puts "Validated Address: "
   result[:valid_addresses][:valid_address].each do |key, value|
-    print key.to_s + ": " + value.to_s + "\n" if not value.nil?
+    puts key.to_s + ": " + value.to_s if not value.nil?
   end
   
 end

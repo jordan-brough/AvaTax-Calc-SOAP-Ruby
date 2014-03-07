@@ -1,5 +1,5 @@
-require_relative 'Avatax_TaxService/lib/avatax_taxservice.rb'
-require_relative 'Avatax_AddressService/lib/avatax_addressservice.rb'
+require 'Avatax_TaxService'
+require 'Avatax_AddressService'
 require 'yaml'
 #Note that the ping function exists in both the AddressSvc and TaxSvc classes - it works the same way in both.
 
@@ -15,10 +15,10 @@ result = svc.ping
 #print result
 
 #Display the result
-print "Ping ResultCode: "+result[:result_code]+"\n"
+puts "Ping ResultCode: "+result[:result_code]
 
 #If we encountered an error
 if result[:result_code] != "Success"
   #Print the first error message returned
-  print result[:details]+"\n"
+  puts result[:details]
 end

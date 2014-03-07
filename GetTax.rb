@@ -1,4 +1,4 @@
-require_relative 'Avatax_TaxService/lib/avatax_taxservice.rb'
+require 'Avatax_TaxService'
 require 'date'
 require 'yaml'
 
@@ -97,26 +97,22 @@ svc = AvaTax::TaxService.new(:username => credentials['username'],
   #Call the service
 result = svc.gettax(get_tax_request)
 #Display the result
-#print result
-print "CalcTax ResultCode: "+result[:result_code]+"\n"
+#puts result
+puts "CalcTax ResultCode: "+result[:result_code]
 #If we encountered an error
 if result[:result_code] != "Success"
   result[:messages][:message].each do |message|
-    print message[:summary]+ ": " + message[:details] + "\n"
+    puts message[:summary]+ ": " + message[:details]
   end
 else
-  print "DocCode: " + result[:doc_code]+ " Total Tax Calculated: " + result[:total_tax] + "\n"
-  print "Jurisdiction Breakdown:\n"
+  puts "DocCode: " + result[:doc_code]+ " Total Tax Calculated: " + result[:total_tax]
+  puts "Jurisdiction Breakdown:"
   #Show the tax amount calculated at each jurisdictional level
   result[:tax_lines][:tax_line].each do |line|
-    print "   "
-    print "Line Number " + line[:no] + ": Tax: " + line[:tax]
-    print "\n"
+    puts "   "+  "Line Number " + line[:no] + ": Tax: " + line[:tax]
     #This will display the jurisdiction name and tax at each jurisdiction for the line.
-    line[:tax_details][:tax_detail].each do |detail| 
-      print "       "
-      print detail[:juris_name]+ ": " +detail[:tax]
-      print "\n"
+    line[:tax_details][:tax_detail].each do |key,value| 
+      puts "       " + key.to_s+ ": " + value.to_s
     end
   end
 end

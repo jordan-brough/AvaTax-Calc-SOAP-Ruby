@@ -1,4 +1,4 @@
-require_relative 'Avatax_TaxService/lib/avatax_taxservice.rb'
+require 'Avatax_TaxService'
 require 'yaml'
 
 #Create an instance of the service class
@@ -25,10 +25,10 @@ svc = AvaTax::TaxService.new(:username => credentials['username'],
 result = svc.posttax(request)
 
 #Display the result
-print "PostTax ResultCode: "+result[:result_code]+"\n"
+puts "PostTax ResultCode: "+result[:result_code]
 
 #If we encountered an error
 if result[:result_code] != "Success"
   #Print the first error message returned
-  print result[:messages][:message][0][:summary]+"\n"
+  puts result[:messages][:message][0][:summary]
 end
