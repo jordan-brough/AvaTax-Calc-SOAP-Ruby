@@ -1,39 +1,44 @@
 require 'Avatax_TaxService'
-require 'yaml'
 
-#Create an instance of the service class
-credentials = YAML::load(File.open('credentials.yml'))
-svc = AvaTax::TaxService.new(:username => credentials['username'], 
-      :password => credentials['password'],  
-      :clientname => credentials['clientname'],
-      :use_production_url => credentials['production']) 
+accountNumber = "1234567890"
+licenseKey = "A1B2C3D4E5F6G7H8"
+useProductionURL = false
+
+# Header Level Parameters
+taxSvc = AvaTax::TaxService.new(
+
+# Required Header Parameters
+  :username => accountNumber, 
+  :password => licenseKey,  
+  :use_production_url => useProductionURL,
+  :clientname => "AvaTaxSample",
+
+# Optional Header Parameters  
+  :name => "Development") 
+
+getTaxHistoryRequest = {  
+# Required Request Parameters
+  :companycode => "APITrialCompany",
+  :doctype => "SalesInvoice",
+  :doccode => "INV001",
   
-  #Create the request
-  request = {
-    :doccode=>"MyDocCode",    #Required
-    :companycode=> credentials['companycode'],      #Required
-    :doctype=>"SalesInvoice", #Required
-    :docid=> "",              #Optional
-    :detaillevel=>"Tax",      #Optional
-    :debug => false           #Optional
-    }
-  #Call the service
-result = svc.gettaxhistory(request)
-#print result
-#Display the result
-puts "GetTaxHistory ResultCode: "+result[:result_code]
-#If we encountered an error
-if result[:result_code] != "Success"
-  puts result[:details]
+# Optional Request Parameters
+  :detaillevel=>"Tax"
+}
+
+getTaxHistoryResult = taxSvc.getTaxHistory(getTaxHistoryRequest)
+
+# Print Results
+puts "GetTaxHistoryTest ResultCode: " + getTaxHistoryResult[:result_code]
+if getTaxHistoryResult[:result_code] != "Success"
+  getTaxHistoryResult[:messages].each { |message| puts message[:summary] }
 else
-  puts "DocCode: " + result[:get_tax_result][:doc_code]+ " Total Tax Calculated: " + result[:get_tax_result][:total_tax].to_s
-  puts "Jurisdiction Breakdown:"
-  #Show the tax amount calculated at each jurisdictional level
-  result[:get_tax_result][:tax_lines][:tax_line].each do |line|
-    puts "   "+ "Line Number " + line[:no] + ": Tax: " + line[:tax]
-    #This will display the jurisdiction name and tax at each jurisdiction for the line.
-    line[:tax_details][:tax_detail].each do |key,value| 
-      puts "       " + key.to_s+ ": " + value.to_s
-    end
+  puts "Document Code: " + getTaxHistoryResult[:get_tax_result][:doc_code] + 
+    " Total Tax: " + getTaxHistoryResult[:get_tax_result][:total_tax].to_s
+  getTaxHistoryResult[:get_tax_result][:tax_lines][:tax_line].each do |taxLine|
+      puts "    " + "Line Number: " + taxLine[:no] + " Line Tax: " + taxLine[:tax].to_s
+      taxLine[:tax_details][:tax_detail].each do |taxDetail| 
+          puts "        " + "Jurisdiction: " + taxDetail[:juris_name] + " Tax: " + taxDetail[:tax].to_s
+      end
   end
 end

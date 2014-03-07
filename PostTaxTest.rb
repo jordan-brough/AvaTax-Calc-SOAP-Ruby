@@ -1,34 +1,39 @@
 require 'Avatax_TaxService'
-require 'yaml'
 
-#Create an instance of the service class
-credentials = YAML::load(File.open('credentials.yml'))
-svc = AvaTax::TaxService.new(:username => credentials['username'], 
-      :password => credentials['password'],  
-      :clientname => credentials['clientname'],
-      :use_production_url => credentials['production']) 
+accountNumber = "1234567890"
+licenseKey = "A1B2C3D4E5F6G7H8"
+useProductionURL = false
+
+# Header Level Parameters
+taxSvc = AvaTax::TaxService.new(
+
+# Required Header Parameters
+  :username => accountNumber, 
+  :password => licenseKey,  
+  :use_production_url => useProductionURL,
+  :clientname => "AvaTaxSample",
+
+# Optional Header Parameters  
+  :name => "Development") 
+
+postTaxRequest = {  
+  # Required Request Parameters
+  :companycode => "APITrialCompany",
+  :doctype => "SalesInvoice",
+  :doccode => "INV001",
+  :commit => "false",
+  :docdate => "2014-01-01",
+  :totaltax => "34.07",
+  :totalamount => "170",
+
+  # Optional Request Parameters
+  :newdoccode => "INV001-1"
+}
   
-  #Create the request
-  request = {
-    :docid=>"",   #optional
-    :companycode=> credentials['companycode'],      #Required
-    :doctype=>"SalesInvoice", #Required
-    :doccode => "MyDocCode",
-    :docdate => DateTime.now.strftime("%Y-%m-%d"),
-    :totalamount => "1100.5500",
-    :totaltax => "7",
-    :hashcode => "0",
-    :commit => "false",
-    :newdoccode => "MyDocCode"    
-    }
-  #Call the service
-result = svc.posttax(request)
+postTaxResult = taxSvc.posttax(postTaxRequest)
 
-#Display the result
-puts "PostTax ResultCode: "+result[:result_code]
-
-#If we encountered an error
-if result[:result_code] != "Success"
-  #Print the first error message returned
-  puts result[:messages][:message][0][:summary]
+# Print Results
+puts "PostTaxTest ResultCode: " + postTaxResult[:result_code]
+if postTaxResult[:result_code] != "Success"
+  postTaxResult[:messages].each { |message| puts message[:summary] }
 end

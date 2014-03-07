@@ -1,27 +1,33 @@
 require 'Avatax_TaxService'
-require 'yaml'
 
-#Create an instance of the service class
-credentials = YAML::load(File.open('credentials.yml'))
-svc = AvaTax::TaxService.new(:username => credentials['username'], 
-      :password => credentials['password'],  
-      :clientname => credentials['clientname'],
-      :use_production_url => credentials['production']) 
-  
-  #Create the request
-  request = {
-    :doccode=>"MyDocCode",   #Required
-    :companycode=>credentials['companycode'],      #Required
-    :doctype=>"SalesInvoice", #Required
-    :cancelcode=>"DocVoided" #Required
+accountNumber = "1234567890"
+licenseKey = "A1B2C3D4E5F6G7H8"
+useProductionURL = false
+
+# Header Level Parameters
+taxSvc = AvaTax::TaxService.new(
+
+# Required Header Parameters
+  :username => accountNumber, 
+  :password => licenseKey,  
+  :use_production_url => useProductionURL,
+  :clientname => "AvaTaxSample",
+
+# Optional Header Parameters  
+  :name => "Development") 
+
+cancelTaxRequest = {
+    # Required Request Parameters
+    :companycode => "APITrialCompany",
+    :doctype => "SalesInvoice",
+    :doccode => "INV001",
+    :cancelcode => "DocVoided"
     }
-  #Call the service
-result = svc.canceltax(request)
-#Display the result
-puts "CancelTax ResultCode: "+result[:result_code]
 
-#If we encountered an error
-if result[:result_code] != "Success"
-  #Print the first error message returned
-  puts result[:details]
+cancelTaxResult = taxSvc.canceltax(cancelTaxRequest)
+
+# Print Results
+puts "CancelTaxTest ResultCode: "+cancelTaxResult[:result_code]
+if cancelTaxResult[:result_code] != "Success"
+  cancelTaxResult[:messages].each { |message| puts message[:summary] }
 end

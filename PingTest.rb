@@ -1,24 +1,25 @@
 require 'Avatax_TaxService'
-require 'Avatax_AddressService'
-require 'yaml'
-#Note that the ping function exists in both the AddressSvc and TaxSvc classes - it works the same way in both.
 
-#Create an instance of the service class
-credentials = YAML::load(File.open('credentials.yml'))
-svc = AvaTax::TaxService.new(:username => credentials['username'], 
-      :password => credentials['password'],  
-      :clientname => credentials['clientname'],
-      :use_production_url => credentials['production']) 
+accountNumber = "1234567890"
+licenseKey = "A1B2C3D4E5F6G7H8"
+useProductionURL = false
 
-  #Call the service
-result = svc.ping
-#print result
+# Header Level Parameters
+taxSvc = AvaTax::TaxService.new(
+
+# Required Header Parameters
+  :username => accountNumber, 
+  :password => licenseKey,  
+  :use_production_url => useProductionURL,
+  :clientname => "AvaTaxSample",
+
+# Optional Header Parameters  
+  :name => "Development") 
+
+pingResult = taxSvc.ping
 
 #Display the result
-puts "Ping ResultCode: "+result[:result_code]
-
-#If we encountered an error
-if result[:result_code] != "Success"
-  #Print the first error message returned
-  puts result[:details]
+puts "PingTest ResultCode: " + pingResult[:result_code]
+if pingResult[:result_code] != "Success"
+  pingResult[:messages].each { |message| puts message[:summary] }
 end
