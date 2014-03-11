@@ -26,12 +26,12 @@ getTaxHistoryRequest = {
   :detaillevel=>"Tax"
 }
 
-getTaxHistoryResult = taxSvc.getTaxHistory(getTaxHistoryRequest)
+getTaxHistoryResult = taxSvc.gettaxhistory(getTaxHistoryRequest)
 
 # Print Results
 puts "GetTaxHistoryTest ResultCode: " + getTaxHistoryResult[:result_code]
 if getTaxHistoryResult[:result_code] != "Success"
-  getTaxHistoryResult[:messages].each { |message| puts message[:summary] }
+  getTaxHistoryResult[:messages].each { |message| puts message[:details] }
 else
   puts "Document Code: " + getTaxHistoryResult[:get_tax_result][:doc_code] + 
     " Total Tax: " + getTaxHistoryResult[:get_tax_result][:total_tax].to_s

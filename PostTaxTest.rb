@@ -35,5 +35,9 @@ postTaxResult = taxSvc.posttax(postTaxRequest)
 # Print Results
 puts "PostTaxTest ResultCode: " + postTaxResult[:result_code]
 if postTaxResult[:result_code] != "Success"
-  postTaxResult[:messages].each { |message| puts message[:summary] }
+  if postTaxResult[:messages][0].nil? 
+    postTaxResult[:messages][:message].each { |message| puts message[:details] }
+  else
+    postTaxResult[:messages].each { |message| puts message[:details] }
+  end
 end

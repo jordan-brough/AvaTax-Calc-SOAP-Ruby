@@ -21,5 +21,5 @@ pingResult = taxSvc.ping
 #Display the result
 puts "PingTest ResultCode: " + pingResult[:result_code]
 if pingResult[:result_code] != "Success"
-  pingResult[:messages].each { |message| puts message[:summary] }
+  pingResult[:messages].each { |message| puts message[:details] }
 end

@@ -29,5 +29,5 @@ cancelTaxResult = taxSvc.canceltax(cancelTaxRequest)
 # Print Results
 puts "CancelTaxTest ResultCode: "+cancelTaxResult[:result_code]
 if cancelTaxResult[:result_code] != "Success"
-  cancelTaxResult[:messages].each { |message| puts message[:summary] }
+  cancelTaxResult[:messages].each { |message| puts message[:details] }
 end

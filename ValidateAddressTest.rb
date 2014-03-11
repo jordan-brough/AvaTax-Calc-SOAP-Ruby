@@ -37,7 +37,7 @@ validateResult = addressSvc.validate(validateRequest)
 # Print Results
 puts "ValidateAddressTest Result: "+validateResult[:result_code]
 if validateResult[:result_code] != "Success"
-  validateResult[:messages].each { |message| puts message[:summary] }
+  validateResult[:messages].each { |message| puts message[:details] }
 else
   puts validateResult[:valid_addresses][:valid_address][:line1] + 
   " " + 
