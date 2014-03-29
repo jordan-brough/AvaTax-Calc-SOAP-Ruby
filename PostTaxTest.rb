@@ -23,8 +23,8 @@ postTaxRequest = {
   :doccode => "INV001",
   :commit => "false",
   :docdate => "2014-01-01",
-  :totaltax => "34.07",
-  :totalamount => "170",
+  :totaltax => "14.27",
+  :totalamount => "175",
 
   # Optional Request Parameters
   :newdoccode => "INV001-1"
