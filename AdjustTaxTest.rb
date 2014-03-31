@@ -16,15 +16,19 @@ taxSvc = AvaTax::TaxService.new(
 # Optional Header Parameters  
   :name => "Development") 
 
-getTaxRequest = {  
-  # Document Level Parameters
+adjustTaxRequest = {  
+  # AdjustTax Level Parameters
+  # Required Request Parameters
+  :adjustmentreason => 4,
+  :adjustmentdescription => "Transaction Adjusted for Testing",
+  # GetTaxRequest Level Parameters
   # Required Request Parameters
   :customercode => "ABC4335",
   :docdate => "2014-01-01",
   
   # Best Practice Request Parameters
   :companycode => "APITrialCompany",
-  :doccode => "INV001-2323",
+  :doccode => "INV001",
   :detaillevel => "Tax",
   :commit => false,
   :doctype => "SalesInvoice",
@@ -130,20 +134,20 @@ getTaxRequest = {
   ]
 }
 
-getTaxResult = taxSvc.gettax(getTaxRequest)
+adjustTaxResult = taxSvc.adjusttax(adjustTaxRequest)
 
 # Print Results
-puts "GetTaxTest ResultCode: " + getTaxResult[:result_code]
-if getTaxResult[:result_code] != "Success"
-  if getTaxResult[:messages][0].nil? 
-    getTaxResult[:messages][:message].each { |message| puts message[:summary] }
+puts "AdjustTaxTest ResultCode: " + adjustTaxResult[:result_code]
+if adjustTaxResult[:result_code] != "Success"
+  if adjustTaxResult[:messages][0].nil? 
+    adjustTaxResult[:messages][:message].each { |message| puts message[:summary] }
   else
-    getTaxResult[:messages].each { |message| puts message[:details] }
+    adjustTaxResult[:messages].each { |message| puts message[:summary] }
   end
 else
-  puts "Document Code: " + getTaxResult[:doc_code] + 
-    " Total Tax: " + getTaxResult[:total_tax].to_s
-  getTaxResult[:tax_lines][:tax_line].each do |taxLine|
+  puts "Document Code: " + adjustTaxResult[:doc_code] + 
+    " Total Tax: " + adjustTaxResult[:total_tax].to_s
+  adjustTaxResult[:tax_lines][:tax_line].each do |taxLine|
       puts "    " + "Line Number: " + taxLine[:no] + " Line Tax: " + taxLine[:tax].to_s
       taxLine[:tax_details][:tax_detail].each do |taxDetail| 
           puts "        " + "Jurisdiction: " + taxDetail[:juris_name] + " Tax: " + taxDetail[:tax].to_s
