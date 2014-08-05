@@ -1,4 +1,4 @@
-require 'Avatax_AddressService'
+require 'avatax_addressservice'
 require 'yaml'
 
 credentials = YAML::load(File.open('credentials.yml'))

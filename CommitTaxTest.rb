@@ -1,4 +1,4 @@
-require 'Avatax_TaxService'
+require 'avatax_taxservice'
 require 'yaml'
 
 credentials = YAML::load(File.open('credentials.yml'))
