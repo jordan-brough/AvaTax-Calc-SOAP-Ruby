@@ -1,16 +1,15 @@
 require 'Avatax_AddressService'
+require 'yaml'
 
-accountNumber = "1234567890"
-licenseKey = "A1B2C3D4E5F6G7H8"
-useProductionURL = false
+credentials = YAML::load(File.open('credentials.yml'))
 
 # Header Level Parameters
 addressSvc = AvaTax::AddressService.new(
 
 # Required Header Parameters
-  :username => accountNumber, 
-  :password => licenseKey,  
-  :use_production_url => useProductionURL,
+  :username => credentials['account_number'], 
+  :password => credentials['license_key'],  
+  :use_production_url => credentials['use_production_url'],
   :clientname => "AvaTaxSample",
 
 # Optional Header Parameters  

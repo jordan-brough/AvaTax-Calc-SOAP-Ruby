@@ -1,16 +1,15 @@
 require 'Avatax_TaxService'
+require 'yaml'
 
-accountNumber = "1234567890"
-licenseKey = "A1B2C3D4E5F6G7H8"
-useProductionURL = false
+credentials = YAML::load(File.open('credentials.yml'))
 
 # Header Level Parameters
 taxSvc = AvaTax::TaxService.new(
 
 # Required Header Parameters
-  :username => accountNumber, 
-  :password => licenseKey,  
-  :use_production_url => useProductionURL,
+  :username => credentials['account_number'], 
+  :password => credentials['license_key'],  
+  :use_production_url => credentials['use_production_url'],
   :clientname => "AvaTaxSample",
 
 # Optional Header Parameters  
@@ -36,7 +35,7 @@ postTaxResult = taxSvc.posttax(postTaxRequest)
 puts "PostTaxTest ResultCode: " + postTaxResult[:result_code]
 if postTaxResult[:result_code] != "Success"
   if postTaxResult[:messages][0].nil? 
-    postTaxResult[:messages][:message].each { |message| puts message[:details] }
+    puts postTaxResult[:messages][:message][:details]
   else
     postTaxResult[:messages].each { |message| puts message[:details] }
   end
