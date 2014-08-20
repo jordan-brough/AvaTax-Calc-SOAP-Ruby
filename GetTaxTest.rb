@@ -9,7 +9,7 @@ taxSvc = AvaTax::TaxService.new(
 # Required Header Parameters
   :username => credentials['account_number'], 
   :password => credentials['license_key'],  
-  :use_production_url => credentials['use_production_url'],
+  :use_production_account => credentials['use_production_account'],
   :clientname => "AvaTaxSample",
 
 # Optional Header Parameters  
